@@ -1,0 +1,33 @@
+section .data
+  mensaje_error db "Error: División por cero detectada.", 0ah, 0
+
+section .text
+  global _start
+
+_start:
+  mov eax, 10
+  mov ebx, 2
+
+  cmp ebx, 0
+  je .catch_bloque
+
+  mov edx, 0
+  div ebx
+  jmp .try_exitoso
+
+.catch_bloque:
+  mov eax, 4
+  mov ebx, 1
+  mov ecx, mensaje_error
+  int 0x80
+
+  mov eax, 0xFFFFFFFF
+  jmp .fin
+
+.try_exitoso:
+  jmp .fin
+
+.fin:
+  mov eax, 1
+  xor ebx, ebx
+  int 0x80

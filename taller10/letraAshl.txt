@@ -1,0 +1,32 @@
+section .data
+    char db 5          ; 0000 0101
+    newline db 10
+
+section .text
+    global _start
+
+_start:
+    ; char = 'A' (0100 0001) se desplaza a la izquierda 2 veces: 0001 0100 = 20h
+    mov cl, 2              ; Cantidad de bits para desplazar
+    mov al, [char]
+    shl al, cl
+    mov [char], al
+
+    ; Imprimir carácter
+    mov eax, 4
+    mov ebx, 1
+    mov ecx, char
+    mov edx, 1
+    int 0x80
+
+    ; Salto de línea
+    mov eax, 4
+    mov ebx, 1
+    mov ecx, newline
+    mov edx, 1
+    int 0x80
+
+    ; Salir
+    mov eax, 1
+    xor ebx, ebx
+    int 0x80

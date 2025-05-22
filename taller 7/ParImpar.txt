@@ -1,0 +1,37 @@
+section .data
+    msg_par db "Numero par", 10, 0
+    msg_impar db "Numero impar", 10, 0
+
+section .bss
+    num resb 1  ; Espacio para almacenar el número
+
+section .text
+    global _start
+
+_start:
+    ; Inicializar el número (cambiar este valor para probar)
+    mov byte [num], 4  ; Cambia este valor para probar con otro número
+
+    mov al, [num]      
+    test al, 1         ; Verificar el bit menos significativo
+    jp flag_par        ; Si la paridad es par, es un número par
+    jnp flag_impar     ; Si no es par, es impar
+
+flag_par:
+    mov ecx, msg_par   
+    jmp imprimir
+
+flag_impar:
+    mov ecx, msg_impar  
+    jmp imprimir
+
+imprimir:
+    mov eax, 4          ; syscall: sys_write
+    mov ebx, 1          ; file descriptor: stdout
+    mov edx, 12         ; longitud del mensaje
+    int 0x80            ; llamar al kernel
+
+salir:
+    mov eax, 1          ; syscall: sys_exit
+    xor ebx, ebx        
+    int 0x80            ; llamar al kernel

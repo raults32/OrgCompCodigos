@@ -1,0 +1,40 @@
+section .data
+    num1 db 5              ; Define el primer número (5)
+    num2 db 11             ; Define el segundo número (11)
+    num db 0               ; Reserva espacio para guardar el resultado de la suma
+    msg db 'Resultado: ',0 ; Mensaje a mostrar antes del resultado
+
+section .bss
+    buffer resb 4          ; Reservar 4 bytes para el buffer (aunque solo se usa 1)
+
+section .text
+    global _start
+
+_start:
+    mov al, [num1]         ; Accede directamente al contenido de la dirección de la etiqueta num1
+    add al, [num2]         ; Suma el valor de num2 (11) al registro AL (AL = 16)
+    mov [num], al          ; Guarda el resultado (16) en la variable result
+
+    ; Convertir el resultado a su representación ASCII
+    movzx eax, byte [num]  ; Copia el byte de result en eax y llena los otros 24 bits con ceros
+    add eax, '0'           ; Sumar 48 para convertir el número en carácter ASCII ('0' = 48)
+    mov [buffer], al       ; Guardar el carácter ASCII resultante en el buffer
+
+    ; Imprimir el mensaje 'Resultado:'
+    mov eax, 4             ; Código del sistema para sys_write
+    mov ebx, 1             ; File descriptor 1 (stdout)
+    mov ecx, msg           ; Dirección del mensaje a imprimir
+    mov edx, 11            ; Longitud del mensaje
+    int 0x80               ; Llamada al sistema (interrupción)
+
+    ; Imprimir el resultado convertido a ASCII
+    mov eax, 4             ; sys_write
+    mov ebx, 1             ; stdout
+    mov ecx, buffer        ; Dirección del buffer con el carácter a imprimir
+    mov edx, 1             ; Longitud de un byte
+    int 0x80               ; Llamada al sistema
+
+    ; Terminar el programa
+    xor eax, eax           ; Código del sistema para sys_exit
+    xor ebx, ebx           ; Código de salida 0
+    int 0x80               ; Llamada al sistema

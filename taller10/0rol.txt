@@ -1,0 +1,31 @@
+1  .section .data
+2  char db 0
+3  newline db 10
+4
+5  .section .text
+6  global _start
+7
+8  _start:
+9  mov al, 0x0A      ; Valor inicial
+10  rol al, 3
+11
+12  ; Guardar en char
+13  mov [char], al
+14
+15  mov eax, 4
+16  mov ebx, 1
+17  mov ecx, char
+18  mov edx, 1
+19  int 0x80
+20
+21  ; Salto de línea
+22  mov eax, 4
+23  mov ebx, 1
+24  mov ecx, newline
+25  mov edx, 1
+26  int 0x80
+27
+28  ; Salir
+29  mov eax, 1
+30  xor ebx, ebx
+31  int 0x80

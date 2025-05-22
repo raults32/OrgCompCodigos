@@ -1,0 +1,31 @@
+1  .section .data
+2  char db 0
+3  newline db 10
+4
+5  .section .text
+6  global _start
+7
+8  _start:
+9  mov al, 0x60      ; 0110 0000
+10  ror al, 3         ; -> 0011 0000 = 0x30
+11
+12
+13  ; imprimir
+14  mov [char], al
+15  mov eax, 4
+16  mov ebx, 1
+17  mov ecx, char
+18  mov edx, 1
+19  int 0x80
+20
+21  ; Salto de línea
+22  mov eax, 4
+23  mov ebx, 1
+24  mov ecx, newline
+25  mov edx, 1
+26  int 0x80
+27
+28  ; Salir
+29  xor ebx, ebx
+30  mov eax, 1
+31  int 0x80

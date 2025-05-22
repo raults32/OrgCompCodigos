@@ -1,0 +1,55 @@
+section .data
+msg_positivo db "Numeros positivo", 0
+msg_negativo db "Numero negativo: ", 0
+msg_cero db "Numero cero: ", 0
+
+section .bss
+    num1 resb 1         ; Primera variable (entre 0 y 9)
+    num2 resb 2         ; Segunda variable (entre 0 y 9)
+    result resb 2       ; Espacio para almacenar el número en ASCII (1 byte + terminador)
+
+section .text
+    global _start
+
+_start:
+    ; Inicializar los números
+    mov byte [num1], 0  ; Asignar valor a num1
+    mov byte [num2], 10 ; Asignar valor a num2
+
+    mov al, [num1]      
+    cmp al, [num2]    
+    jns  flag_positivo    
+    js  flag_negativo
+    JZ  flag_cero    
+
+flag_positivo:
+    mov ecx, msg_positivo  ; Cargar mensaje de igualdad
+    jmp imprimir
+
+flag_negativo:
+    mov ecx, msg_negativo  ; Cargar mensaje de mayor
+    jmp convertir
+
+flag_cero:
+    mov ecx, msg_cero  ; Cargar mensaje de menor
+    jmp imprimir
+    
+convertir:
+    ; Convertir el número a ASCII
+    mov al, [num1]      ; Cargar num1 en AL
+    add al, '0'         ; Convertir a ASCII
+    mov [result], al    ; Almacenar el resultado
+
+imprimir:
+   ; Imprimir el mensaje
+    mov eax, 4          ; syscall: sys_write
+    mov ebx, 1          ; file descriptor: stdout
+    mov edx, 20       ; longitud del mensaje (ajusta según sea necesario)
+    int 0x80            ; llamar al kernel
+
+    ; Salir del programa
+    mov eax, 1          ; syscall: sys_exit
+    xor ebx, ebx        ; código de salida 0
+    int 0x80            ; llamar al kernel
+    
+    

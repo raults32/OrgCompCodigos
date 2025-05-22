@@ -1,0 +1,30 @@
+; Esto es un macro para reutilizar código.
+%macro print_int 1 ; Se utiliza este para imprimir un entero
+mov eax, 4
+mov ebx, 1          ; salida
+mov ecx, %1         ; Dirección
+mov edx, 4          ; Cantidad de bytes para escribir
+int 0x80
+%end macro
+
+Section .data
+array dd 1,2,3,4,5 ; esto es un arreglo de 5 números
+
+Section .text
+global _start
+
+_start:
+mov ecx, 0          ; Índice para recorrer el arreglo
+mov eax, 0          ; eax se usa para sumar
+
+bucle:
+mov ebx, [array + ecx*4] ; lee el arreglo. Lo multiplica por 4 más el arreglo
+add eax, ebx        ; suma el valor a eax
+
+inc ecx             ; Incrementa el índice
+cmp ecx, 5
+jl bucle            ; Si ecx es menor a 5 termina el bucle
+print_int eax       ; Contiene la suma total del arreglo
+mov eax, 1
+mov ebx, ebx
+int 0x80
